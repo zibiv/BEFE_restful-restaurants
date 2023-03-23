@@ -10,13 +10,16 @@ import RestaurantsContext from "../../provider/restaurants";
 import Restaurant from "./Restaurant";
 
 const Restaurants = () => {
+  //получение состояния и функции диспетчеризации действий для изменения состояния из контекста
   const {
     state: { restaurants },
     dispatch,
   } = useContext(RestaurantsContext);
+  //инициализация состояния для поля добавления нового ресторана
   const [newRestaurantName, setNewRestaurantName] = useState("");
 
   useEffect(() => {
+    // получение всех ресторанов при первой загрузке компонента
     async function fetchData() {
       const restaurantsData = await getRestaurants();
 

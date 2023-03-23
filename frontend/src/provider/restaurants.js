@@ -4,7 +4,7 @@ export const RestaurantsInitialState = {
   restaurants: [],
   starredRestaurants: [],
 };
-
+// reducer функция для управлением данными о ресторанах
 export const RestaurantsReducer = (state = RestaurantsInitialState, action) => {
   switch (action.type) {
     case "LOADED_RESTAURANTS": {
@@ -64,7 +64,7 @@ export const RestaurantsReducer = (state = RestaurantsInitialState, action) => {
       return state;
   }
 };
-
+//создание контекста, которое состоит из состояния - рестораны и функции диспетчеризации 
 const RestaurantsContext = React.createContext({
   state: RestaurantsInitialState,
   dispatch: (action) => {},
