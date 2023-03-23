@@ -44,7 +44,7 @@ export const updateRestaurantName = async (id, newName) => {
 
   return response.status;
 };
-
+//отметка пользователем ресторана 
 export const starRestaurant = async (id) => {
   const response = await fetch(`${API_ENDPOINT}/restaurants/starred`, {
     method: "POST",
@@ -57,6 +57,6 @@ export const starRestaurant = async (id) => {
   });
 
   const newStarredRestaurant = await response.json();
-
+  
   return { status: response.status, data: newStarredRestaurant };
 };

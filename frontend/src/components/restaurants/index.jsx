@@ -46,14 +46,17 @@ const Restaurants = () => {
     dispatch({ type: "DELETE_RESTAURANT", payload: id });
   };
 
+  //отметка пользователем ресторана
   const onStarRestaurant = async (id) => {
+    //получение данных из API
     const { data, status } = await starRestaurant(id);
 
+    //при получении статуса который отличается от 200 вывести ошибку
     if (status !== 200) {
       alert("Updating failed");
       return;
     }
-
+    //если статус 200 сформировать объект действия и передать его в reducer
     dispatch({ type: "STAR_RESTAURANT", payload: data });
   };
 

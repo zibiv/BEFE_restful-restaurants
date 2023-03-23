@@ -21,17 +21,15 @@ let STARRED_RESTAURANTS = [
 ];
 //middleware функция для проверки наличия ресторана по параметру и формированию объекта для дальнейшей работы
 router.param("id", (req, res, next, restId) => {
-  console.log(ALL_RESTAURANTS, STARRED_RESTAURANTS);
   const restaurantById = ALL_RESTAURANTS.find(
     restaurant => restaurant.id === restId
   );
   const staredRestaurantById = STARRED_RESTAURANTS.find(
     staredRestaurant => staredRestaurant.restaurantId === restId
   );
-  console.log(restaurantById, staredRestaurantById);
   if(!(restaurantById && staredRestaurantById)) return res.sendStatus(404);
   req.staredRestaurant = {
-    id: staredRestaurantById.restaurantId,
+    id: staredRestaurantById.Id,
     comment: staredRestaurantById.comment,
     name: restaurantById.name,
   }
@@ -75,6 +73,31 @@ router.get("/:id", (req, res) => {
 /**
  * Feature 8: Adding to your list of starred restaurants.
  */
+router.post("/", (req, res) => {
+  const restaurantId = req.body.id 
+  if(!restaurantId) return res.sendStatus(400);
+  const restaurantById = ALL_RESTAURANTS.find(
+    restaurant => restaurant.id === restaurantId
+  );
+  if(!restaurantById) return res.sendStatus(404);
+  const newID = uuidv4();
+  const newStarredRestaurant = {
+    id: newID,
+    restaurantId: restaurantById.id,
+    comment: ''
+  }
+  //добавление записи в массив отмеченных ресторанов
+  STARRED_RESTAURANTS.push(newStarredRestaurant);
+  //нужно сформировать объект для ответа, так как в хранилище отмеченные рестораны хранятся с немного другими свойствами
+  const newStarredRestaurantResponse = {
+    id: newID,
+    name: restaurantById.name,
+    comment: '',
+  }
+  res.status(200).json(newStarredRestaurantResponse);
+
+
+})
 
 
 
