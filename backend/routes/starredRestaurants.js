@@ -20,21 +20,21 @@ let STARRED_RESTAURANTS = [
   },
 ];
 //middleware функция для проверки наличия ресторана по параметру и формированию объекта для дальнейшей работы
-router.param("id", (req, res, next, restId) => {
-  const restaurantById = ALL_RESTAURANTS.find(
-    restaurant => restaurant.id === restId
-  );
-  const staredRestaurantById = STARRED_RESTAURANTS.find(
-    staredRestaurant => staredRestaurant.restaurantId === restId
-  );
-  if(!(restaurantById && staredRestaurantById)) return res.sendStatus(404);
-  req.staredRestaurant = {
-    id: staredRestaurantById.Id,
-    comment: staredRestaurantById.comment,
-    name: restaurantById.name,
-  }
-  next();
-})
+// router.param("id", (req, res, next, restId) => {
+//   const restaurantById = ALL_RESTAURANTS.find(
+//     restaurant => restaurant.id === restId
+//   );
+//   const staredRestaurantById = STARRED_RESTAURANTS.find(
+//     staredRestaurant => staredRestaurant.restaurantId === restId
+//   );
+//   if(!(restaurantById && staredRestaurantById)) return res.sendStatus(404);
+//   req.staredRestaurant = {
+//     id: staredRestaurantById.Id,
+//     comment: staredRestaurantById.comment,
+//     name: restaurantById.name,
+//   }
+//   next();
+// })
 
 /**
  * Feature 6: Getting the list of all starred restaurants.
@@ -65,7 +65,18 @@ router.get("/", (req, res) => {
  * Feature 7: Getting a specific starred restaurant.
  */
 router.get("/:id", (req, res) => {
-  res.json(req.staredRestaurant);
+  const restaurantById = ALL_RESTAURANTS.find(
+    restaurant => restaurant.id === restId
+  );
+  const staredRestaurantById = STARRED_RESTAURANTS.find(
+    staredRestaurant => staredRestaurant.restaurantId === restId
+  );
+  if(!(restaurantById && staredRestaurantById)) return res.sendStatus(404);
+  res.json({
+    id: staredRestaurantById.Id,
+    comment: staredRestaurantById.comment,
+    name: restaurantById.name,
+  });
 })
 
 
@@ -95,8 +106,6 @@ router.post("/", (req, res) => {
     comment: '',
   }
   res.status(200).json(newStarredRestaurantResponse);
-
-
 })
 
 
@@ -104,6 +113,18 @@ router.post("/", (req, res) => {
 /**
  * Feature 9: Deleting from your list of starred restaurants.
  */
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+  console.log(id)
+  const newStarredRestaurants = STARRED_RESTAURANTS.filter(restaurant => restaurant.id !== id);
+  console.log(newStarredRestaurants, STARRED_RESTAURANTS)
+  if(newStarredRestaurants.length === STARRED_RESTAURANTS.length) return res.sendStatus(404);
+
+  STARRED_RESTAURANTS = newStarredRestaurants;
+
+  //при успешном удалении ресурса лучше направлять 204 код ответа.
+  res.sendStatus(204)
+})
 
 
 /**
