@@ -20,21 +20,17 @@ let STARRED_RESTAURANTS = [
   },
 ];
 //middleware функция для проверки наличия ресторана по параметру и формированию объекта для дальнейшей работы
-// router.param("id", (req, res, next, restId) => {
-//   const restaurantById = ALL_RESTAURANTS.find(
-//     restaurant => restaurant.id === restId
-//   );
-//   const staredRestaurantById = STARRED_RESTAURANTS.find(
-//     staredRestaurant => staredRestaurant.restaurantId === restId
-//   );
-//   if(!(restaurantById && staredRestaurantById)) return res.sendStatus(404);
-//   req.staredRestaurant = {
-//     id: staredRestaurantById.Id,
-//     comment: staredRestaurantById.comment,
-//     name: restaurantById.name,
-//   }
-//   next();
-// })
+router.param("id", (req, res, next, restId) => {
+  const starredRestaurantById = STARRED_RESTAURANTS.find(
+    starredRestaurant => starredRestaurant.id === restId
+  );
+  const restaurantById = ALL_RESTAURANTS.find(
+    restaurant => restaurant.id === starredRestaurantById.restaurantId
+  );
+  if(!(restaurantById && starredRestaurantById)) return res.sendStatus(404);
+  req.starredRestaurant = starredRestaurantById;
+  next();
+})
 
 /**
  * Feature 6: Getting the list of all starred restaurants.
@@ -65,18 +61,7 @@ router.get("/", (req, res) => {
  * Feature 7: Getting a specific starred restaurant.
  */
 router.get("/:id", (req, res) => {
-  const restaurantById = ALL_RESTAURANTS.find(
-    restaurant => restaurant.id === restId
-  );
-  const staredRestaurantById = STARRED_RESTAURANTS.find(
-    staredRestaurant => staredRestaurant.restaurantId === restId
-  );
-  if(!(restaurantById && staredRestaurantById)) return res.sendStatus(404);
-  res.json({
-    id: staredRestaurantById.Id,
-    comment: staredRestaurantById.comment,
-    name: restaurantById.name,
-  });
+  res.json(req.starredRestaurant);
 })
 
 
@@ -115,9 +100,9 @@ router.post("/", (req, res) => {
  */
 router.delete("/:id", (req, res) => {
   const { id } = req.params;
-  console.log(id)
+
   const newStarredRestaurants = STARRED_RESTAURANTS.filter(restaurant => restaurant.id !== id);
-  console.log(newStarredRestaurants, STARRED_RESTAURANTS)
+
   if(newStarredRestaurants.length === STARRED_RESTAURANTS.length) return res.sendStatus(404);
 
   STARRED_RESTAURANTS = newStarredRestaurants;
@@ -130,7 +115,14 @@ router.delete("/:id", (req, res) => {
 /**
  * Feature 10: Updating your comment of a starred restaurant.
  */
+router.put("/:id", (req, res) => {
 
+  const { newComment } = req.body;
+
+  req.starredRestaurant.comment = newComment;
+
+  res.sendStatus(200);
+})
 
 
 module.exports = router;
