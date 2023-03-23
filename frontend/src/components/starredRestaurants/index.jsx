@@ -24,14 +24,16 @@ const StarredRestaurants = () => {
     fetchData();
   }, [dispatch]);
 
+  //удаление ресторана из отмеченных
   const onUnstarRestaurant = async (id) => {
     const responseStatus = await unstarRestaurant(id);
 
-    if (responseStatus !== 200) {
+    //от сервера ожидаем 204 код ответа
+    if (responseStatus !== 204) {
       alert("Updating failed");
       return;
     }
-
+    //диспатчем действие для обновление состояния
     dispatch({
       type: "UNSTAR_RESTAURANT",
       payload: id,
