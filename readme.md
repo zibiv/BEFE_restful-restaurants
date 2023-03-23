@@ -1,0 +1,4 @@
+In this off-platform project, you will be building an API to connect the front-end and back-end of a restaurant review site. This site will allow its users to view a list of saved restaurants, add to that list, star their favorite restaurants, and leave comments about these places. We’ve got you started by building the front-end and setting up some API routes for you. You’ll focus on adding the remaining routes needed to handle starred restaurants and comments.
+
+[X] Дописать обработчики запросов и endpoints в BE для ресторанов отмеченных пользователем
+[ ] При отметке ресторана его можно добавить несколько раз;
