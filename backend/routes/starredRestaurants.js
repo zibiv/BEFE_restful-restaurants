@@ -19,6 +19,24 @@ let STARRED_RESTAURANTS = [
     comment: "Their lunch special is the best!",
   },
 ];
+//middleware функция для проверки наличия ресторана по параметру и формированию объекта для дальнейшей работы
+router.param("id", (req, res, next, restId) => {
+  console.log(ALL_RESTAURANTS, STARRED_RESTAURANTS);
+  const restaurantById = ALL_RESTAURANTS.find(
+    restaurant => restaurant.id === restId
+  );
+  const staredRestaurantById = STARRED_RESTAURANTS.find(
+    staredRestaurant => staredRestaurant.restaurantId === restId
+  );
+  console.log(restaurantById, staredRestaurantById);
+  if(!(restaurantById && staredRestaurantById)) return res.sendStatus(404);
+  req.staredRestaurant = {
+    id: staredRestaurantById.restaurantId,
+    comment: staredRestaurantById.comment,
+    name: restaurantById.name,
+  }
+  next();
+})
 
 /**
  * Feature 6: Getting the list of all starred restaurants.
@@ -48,6 +66,9 @@ router.get("/", (req, res) => {
 /**
  * Feature 7: Getting a specific starred restaurant.
  */
+router.get("/:id", (req, res) => {
+  res.json(req.staredRestaurant);
+})
 
 
 

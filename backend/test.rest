@@ -1,0 +1,10 @@
+//ввод неверного id
+GET http://localhost:3000/restaurants/starred/12
+
+//ввод id ресторана который не отмечен пользователем
+###
+GET http://localhost:3000/restaurants/starred/7f4a4fe2-58eb-4833-9e93-2dfdd1a1d91f
+
+//ввод id ресторана который отмечен пользователем
+###
+GET http://localhost:3000/restaurants/starred/869c848c-7a58-4ed6-ab88-72ee2e8e677c
