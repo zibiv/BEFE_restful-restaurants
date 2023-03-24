@@ -49,7 +49,7 @@ router.get("/", (req, res) => {
       return {
         id: starredRestaurant.id,
         comment: starredRestaurant.comment,
-        name: restaurant.name,
+        name: restaurant.name
       };
     }
   );
@@ -92,7 +92,7 @@ router.post("/", (req, res) => {
   const newStarredRestaurantResponse = {
     id: newID,
     name: restaurantById.name,
-    comment: '',
+    comment: ''
   }
   res.status(200).json(newStarredRestaurantResponse);
 })

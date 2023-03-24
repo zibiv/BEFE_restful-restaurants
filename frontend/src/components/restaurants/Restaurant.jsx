@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import RestaurantsContext from "../../provider/restaurants";
 
 const Restaurant = ({
   restaurant,
@@ -6,8 +7,13 @@ const Restaurant = ({
   onStarRestaurant,
   onUpdateRestaurant,
 }) => {
+  const {
+    state: { starredRestaurants },
+  } = useContext(RestaurantsContext);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(restaurant.name);
+  //получение данных о наличии данного ресторана в списке с отметкой, выбрана переменная так как нам не надо сохранять значение между ре-рендерингами
+  const isStarred = starredRestaurants.some( rest => rest.name === restaurant.name);
 
   useEffect(() => {
     if (!isEditing) {
@@ -48,7 +54,7 @@ const Restaurant = ({
           ) : (
             <>
               <button className='delete-btn' onClick={onDeleteRestaurant}>Delete</button>
-              <button className='star-btn' onClick={onStarRestaurant}>Star</button>
+              <button className='star-btn' onClick={onStarRestaurant} disabled={isStarred}>Star</button>
             </>
           )}
       </div>
