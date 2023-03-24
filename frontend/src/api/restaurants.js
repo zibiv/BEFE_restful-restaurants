@@ -55,6 +55,8 @@ export const starRestaurant = async (id) => {
       "Content-Type": "application/json",
     },
   });
+  //если такой ресторан уже отмечен звездой, то будет отправлен только статус код
+  if(!response.ok) return {status: response.status, data: null};
 
   const newStarredRestaurant = await response.json();
   

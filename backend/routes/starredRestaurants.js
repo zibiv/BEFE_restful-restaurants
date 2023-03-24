@@ -75,6 +75,10 @@ router.post("/", (req, res) => {
   const restaurantById = ALL_RESTAURANTS.find(
     restaurant => restaurant.id === restaurantId
   );
+  const alreadyHasStar = STARRED_RESTAURANTS.find(
+    starredRestaurant => starredRestaurant.restaurantId === restaurantId
+  );
+  if(!!alreadyHasStar) return res.sendStatus(400);
   if(!restaurantById) return res.sendStatus(404);
   const newID = uuidv4();
   const newStarredRestaurant = {
