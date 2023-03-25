@@ -1,7 +1,15 @@
 const express = require("express");
 const { v4: uuidv4 } = require("uuid");
 const router = express.Router();
-const ALL_RESTAURANTS = require("./restaurants").restaurants;
+const ALL_RESTAURANTS = [
+  { id: "0b65fe74-03a9-4b37-ab09-1c8d23189273", name: "Taco Express" },
+  { id: "869c848c-7a58-4ed6-ab88-72ee2e8e677c", name: "Pho Vinason" },
+  { id: "213ca4a4-97ce-4783-917b-f94ef8315778", name: "Rondo Japanese" },
+  { id: "2334b925-802e-4161-b5dd-de53315c9325", name: "SpiceBox Indian Food" },
+  { id: "3e075c8e-7489-4fb6-b029-43a0a1b8936c", name: "Dick's Burgers" },
+  { id: "e8036613-4b72-46f6-ab5e-edd2fc7c4fe4", name: "Fremont Bowl Sushi" },
+  { id: "7f4a4fe2-58eb-4833-9e93-2dfdd1a1d91f", name: "Cafe Turko" },
+];
 
 /**
  * A list of starred restaurants.

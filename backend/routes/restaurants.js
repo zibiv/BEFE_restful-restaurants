@@ -1,36 +1,30 @@
 const express = require("express");
 const { v4: uuidv4 } = require("uuid");
 const router = express.Router();
-
 /**
  * A list of all restaurants that exist.
  * In a "real" application, this data would be maintained in a database.
- */
-let ALL_RESTAURANTS = [
-  { id: "0b65fe74-03a9-4b37-ab09-1c8d23189273", name: "Taco Express" },
-  { id: "869c848c-7a58-4ed6-ab88-72ee2e8e677c", name: "Pho Vinason" },
-  { id: "213ca4a4-97ce-4783-917b-f94ef8315778", name: "Rondo Japanese" },
-  { id: "2334b925-802e-4161-b5dd-de53315c9325", name: "SpiceBox Indian Food" },
-  { id: "3e075c8e-7489-4fb6-b029-43a0a1b8936c", name: "Dick's Burgers" },
-  { id: "e8036613-4b72-46f6-ab5e-edd2fc7c4fe4", name: "Fremont Bowl Sushi" },
-  { id: "7f4a4fe2-58eb-4833-9e93-2dfdd1a1d91f", name: "Cafe Turko" },
-];
+*/
+const supabase = require('../provider/supabase');
+
 
 /**
  * Feature 1: Getting a list of restaurants
  */
-router.get("/", (_req, res) => {
-  res.json(ALL_RESTAURANTS);
+router.get("/", async (_req, res) => {
+  const { data: restaurants } = await supabase.from('restaurants').select();
+  res.json(restaurants);
 });
 
 /**
  * Feature 2: Getting a specific restaurant
  */
-router.get("/:id", (req, res) => {
+//НЕ ИСПОЛЬЗУЕТСЯ ВО ФРОНТЕ
+router.get("/:id", async (req, res) => {
   const { id } = req.params;
 
   // Find the restaurant with the matching id.
-  const restaurant = ALL_RESTAURANTS.find((restaurant) => restaurant.id === id);
+  const { data: restaurant } = await supabase.from('restaurants').select().eq('id', id);
 
   // If the restaurant doesn't exist, let the client know.
   if (!restaurant) {
@@ -45,7 +39,7 @@ router.get("/:id", (req, res) => {
 /**
  * Feature 3: Adding a new restaurant
  */
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const { body } = req;
   const { name } = body;
 
@@ -55,9 +49,10 @@ router.post("/", (req, res) => {
     id: newId,
     name,
   };
-
+  
   // Add the new restaurant to the list of restaurants.
-  ALL_RESTAURANTS.push(newRestaurant);
+  const { error } = await supabase.from('restaurants').insert(newRestaurant).select();
+  if (error)  throw new Error(error.message);
 
   res.json(newRestaurant);
 });
@@ -65,20 +60,13 @@ router.post("/", (req, res) => {
 /**
  * Feature 4: Deleting a restaurant.
  */
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
   const { id } = req.params;
 
-  const newListOfRestaurants = ALL_RESTAURANTS.filter(
-    (restaurant) => restaurant.id !== id
-  );
+  const { error } = await supabase.from('restaurants').delete().eq('id', id);
 
   // The user tried to delete a restaurant that doesn't exist.
-  if (ALL_RESTAURANTS.length === newListOfRestaurants.length) {
-    res.sendStatus(404);
-    return;
-  }
-
-  ALL_RESTAURANTS = newListOfRestaurants;
+  if (error) return res.sendStatus(404);
 
   res.sendStatus(200);
 });
@@ -86,22 +74,18 @@ router.delete("/:id", (req, res) => {
 /**
  * Feature 5: Updating the name of a restaurant.
  */
-router.put("/:id", (req, res) => {
+router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { newName } = req.body;
 
-  const restaurant = ALL_RESTAURANTS.find((restaurant) => restaurant.id === id);
+  const { data: restaurant, error} = await supabase.from('restaurants').update({ name: newName}).eq('id', id).select()
 
-  if (!restaurant) {
+  if (!restaurant || error) {
     res.sendStatus(404);
     return;
   }
-
-  restaurant.name = newName;
-
   res.sendStatus(200);
 });
 
 
 exports.router = router;
-exports.restaurants = ALL_RESTAURANTS;
